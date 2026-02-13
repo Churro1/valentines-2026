@@ -14,6 +14,8 @@ const SWIPE_THRESHOLD = 100;
 export const SwipeCard: React.FC<SwipeCardProps> = ({ data, onRemove }) => {
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-200, 0, 200], [-15, 0, 15]);
+  const [isExiting, setIsExiting] = React.useState(false);
+  const [exitDirection, setExitDirection] = React.useState<null | "left" | "right">(null);
 
   return (
     <motion.div
@@ -33,17 +35,26 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({ data, onRemove }) => {
         info: { offset: { x: number; y: number } }
       ) => {
         if (Math.abs(info.offset.x) > SWIPE_THRESHOLD) {
-          // Animate card off screen and down
-          x.set(info.offset.x > 0 ? 1000 : -1000);
-          setTimeout(onRemove, 300);
+          setIsExiting(true);
+          setExitDirection(info.offset.x > 0 ? "right" : "left");
+          setTimeout(onRemove, 350);
         } else {
           x.set(0);
         }
       }}
       initial={{ scale: 0.95, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
+      animate={
+        isExiting
+          ? {
+              x: exitDirection === "right" ? 1000 : -1000,
+              y: 600,
+              opacity: 0,
+              scale: 1,
+            }
+          : { scale: 1, opacity: 1, x: 0, y: 0 }
+      }
       exit={{ x: 0, y: 600, opacity: 0 }}
-      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      transition={{ type: "spring", stiffness: 200, damping: 30 }}
     >
       <div
         className="w-full h-[60vw] max-h-[320px] relative mb-4 rounded-2xl overflow-hidden"
