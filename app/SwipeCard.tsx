@@ -17,7 +17,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({ data, onRemove }) => {
 
   return (
     <motion.div
-      className="absolute w-[90vw] max-w-sm left-1/2 -translate-x-1/2 top-0 rounded-3xl shadow-lg flex flex-col items-center justify-center p-6"
+      className=" absolute w-[90vw] max-w-sm left-1/2 -translate-x-1/2 top-6 rounded-3xl shadow-lg flex flex-col items-center justify-center p-6 cursor-grab bg-white z-10"
       style={{
         background: data.color,
         y: 0,
@@ -60,6 +60,27 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({ data, onRemove }) => {
       <div className="text-center text-lg font-semibold text-pink-700 mb-2">
         {data.text}
       </div>
+      {/* Swipe prompt animation */}
+      <motion.div
+        className="mt-2 flex flex-col items-center"
+        initial={{ opacity: 0, x: 0 }}
+        animate={{
+          opacity: [0, 1, 1, 0],
+          x: [0, 20, -20, 0],
+        }}
+        transition={{
+          duration: 2.2,
+          times: [0, 0.2, 0.8, 1],
+          repeat: Infinity,
+          repeatType: "loop",
+          ease: "easeInOut"
+        }}
+      >
+        <span className="text-pink-400 text-base font-medium">Swipe me!</span>
+        <svg width="32" height="16" viewBox="0 0 32 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2 8h28M24 4l6 4-6 4" stroke="#EC4899" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </motion.div>
     </motion.div>
   );
 };

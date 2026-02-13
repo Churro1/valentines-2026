@@ -16,11 +16,38 @@ const Proposal: React.FC = () => {
   const [noButtonStyle, setNoButtonStyle] = useState<React.CSSProperties>({});
 
   const moveNoButton = () => {
-    const x = Math.random() * (window.innerWidth - 100); // Subtract button width so it doesn't go off edge
-    const y = Math.random() * (window.innerHeight - 50); // Subtract button height
+    const btnWidth = 100;
+    const btnHeight = 50;
+    const maxX = window.innerWidth - btnWidth;
+    const maxY = window.innerHeight - btnHeight;
 
+    // Get Yes button bounding rect
+    const yesBtn = document.querySelector(".proposal-yes-btn");
+    let yesRect = yesBtn ? yesBtn.getBoundingClientRect() : null;
+
+    let tries = 0;
+    let x = 0, y = 0;
+    let overlap = true;
+    while (overlap && tries < 10) {
+      x = Math.random() * maxX;
+      y = Math.random() * maxY;
+      overlap = false;
+      if (yesRect) {
+        // Check if rectangles overlap
+        const noRect = { left: x, top: y, right: x + btnWidth, bottom: y + btnHeight };
+        if (
+          noRect.right > yesRect.left &&
+          noRect.left < yesRect.right &&
+          noRect.bottom > yesRect.top &&
+          noRect.top < yesRect.bottom
+        ) {
+          overlap = true;
+        }
+      }
+      tries++;
+    }
     setNoButtonStyle({
-      position: "fixed", // BREAKS it out of the card layout
+      position: "fixed",
       left: `${x}px`,
       top: `${y}px`,
     });
@@ -56,22 +83,21 @@ const Proposal: React.FC = () => {
         
         {!yesClicked ? (
           <div className="flex flex-col items-center gap-4 w-full">
-            <button
-              className="w-full py-4 bg-green-500 text-white text-xl font-bold rounded-2xl shadow-lg transition-transform transform active:scale-95 hover:bg-green-600"
-              onClick={handleYes}
-            >
-              Yes!
-            </button>
 
             <button
-              // logic: if 'position' is set in state, use it. Otherwise, default styles apply.
               style={noButtonStyle}
               className="px-8 py-3 bg-gray-200 text-gray-500 font-semibold rounded-xl transition-all duration-100 ease-out z-50 hover:bg-gray-300"
               onTouchStart={moveNoButton}
               onMouseEnter={moveNoButton}
-              onClick={moveNoButton} // Just in case she manages to click it
+              onClick={moveNoButton}
             >
               No
+            </button>
+            <button
+              className="w-full py-4 bg-pink-500 text-white text-xl font-bold rounded-2xl shadow-lg transition-transform transform active:scale-95 proposal-yes-btn"
+              onClick={handleYes}
+            >
+              Yes!
             </button>
           </div>
         ) : (
