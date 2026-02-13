@@ -1,20 +1,27 @@
 import React, { useState } from "react";
 import Image from "next/image";
 
-const bearGif = "/bear-hug.gif"; // Place a cute gif in public folder
+const finalphoto = "/wedding2.png";
 
 const containerStyle = "flex flex-col items-center justify-center w-[90vw] max-w-sm mx-auto rounded-3xl shadow-lg bg-white p-6";
 
 const Proposal: React.FC = () => {
   const [yesClicked, setYesClicked] = useState(false);
-  const [noPos, setNoPos] = useState({ x: 0, y: 0 });
+  const [noPos, setNoPos] = useState({ x: 36, y: 66 });
 
   // Move No button to random position within container
   const moveNoButton = () => {
-    const maxX = window.innerWidth * 0.9 - 80; // 80px button width
-    const maxY = window.innerHeight * 0.6 - 40; // 40px button height
-    const x = Math.random() * maxX;
-    const y = Math.random() * maxY;
+    const container = document.querySelector('.proposal-container');
+    const btnWidth = 80;
+    const btnHeight = 40;
+    let maxX = window.innerWidth * 0.9 - btnWidth;
+    let maxY = window.innerHeight * 0.6 - btnHeight;
+    // Add padding so button doesn't touch edges
+    const padding = 16;
+    maxX = Math.max(maxX - padding, padding);
+    maxY = Math.max(maxY - padding, padding);
+    const x = Math.random() * maxX + padding;
+    const y = Math.random() * maxY + padding;
     setNoPos({ x, y });
   };
 
@@ -32,12 +39,12 @@ const Proposal: React.FC = () => {
   };
 
   return (
-    <div className="relative w-full h-[100dvh] flex items-center justify-center">
+    <div className="relative w-full h-[100dvh] flex items-center justify-center proposal-container">
       <div className={containerStyle} style={{ minHeight: "60vh" }}>
-        <Image src={bearGif} alt="Bear Hug" width={120} height={120} className="mb-4" />
+        <Image src={finalphoto} alt="Final Photo" width={500} height={500} className="mb-4" />
         <div className="text-2xl font-bold text-pink-700 mb-4">Will you be my Valentine?</div>
         {!yesClicked ? (
-          <div className="flex flex-col items-center gap-4 mt-4">
+          <div className="flex flex-col items-center gap-4 mt-4 relative" style={{ minHeight: 90 }}>
             <button
               className="w-40 h-14 bg-gradient-to-r from-pink-400 to-pink-300 text-white text-xl font-bold rounded-full shadow-lg transition-transform hover:scale-105"
               onClick={handleYes}

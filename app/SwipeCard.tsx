@@ -33,6 +33,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({ data, onRemove }) => {
         info: { offset: { x: number; y: number } }
       ) => {
         if (Math.abs(info.offset.x) > SWIPE_THRESHOLD) {
+          // Animate card off screen and down
           x.set(info.offset.x > 0 ? 1000 : -1000);
           setTimeout(onRemove, 300);
         } else {
@@ -41,10 +42,13 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({ data, onRemove }) => {
       }}
       initial={{ scale: 0.95, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
-      exit={{ x: 0, opacity: 0 }}
+      exit={{ x: 0, y: 600, opacity: 0 }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
     >
-      <div className="w-full h-[60vw] max-h-[320px] relative mb-4 rounded-2xl overflow-hidden">
+      <div
+        className="w-full h-[60vw] max-h-[320px] relative mb-4 rounded-2xl overflow-hidden"
+        onPointerDown={e => e.stopPropagation()}
+      >
         <Image
           src={data.image}
           alt={data.text}
